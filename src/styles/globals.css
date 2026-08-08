@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+/* Pretendard Variable */
+@font-face {
+    font-family: "Pretendard Variable";
+    src: url("../assets/fonts/PretendardVariable.woff2") format("woff2");
+    font-weight: 45 920;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Blue Note 디자인 토큰 */
+@theme {
+    --font-sans:
+        "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+
+    /* Background */
+    --color-background: #0c1927;
+    --color-background-deep: #09131e;
+
+    /* Surface */
+    --color-surface: #152535;
+    --color-surface-secondary: #1d2f41;
+    --color-surface-hover: #24394b;
+
+    /* Border */
+    --color-border: #3a4652;
+    --color-divider: #2a3947;
+
+    /* Primary */
+    --color-primary: #a94f40;
+    --color-primary-hover: #bc5a4a;
+    --color-primary-pressed: #873d32;
+    --color-primary-subtle: #392a2b;
+
+    /* Text */
+    --color-foreground: #f0eee8;
+    --color-body: #d5d7d6;
+    --color-muted: #a9b0b5;
+    --color-disabled: #727c84;
+
+    /* Semantic */
+    --color-sage: #82968b;
+    --color-moonlight: #e0bf9d;
+    --color-error: #d66b5d;
+
+    /* Radius */
+    --radius-card: 1rem;
+    --radius-button: 0.625rem;
+}
+
+/* 전역 기본 스타일 */
+@layer base {
+    html,
+    body,
+    #root {
+        min-height: 100%;
+    }
+
+    html {
+        background-color: var(--color-background);
+    }
+
+    body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+
+        color: var(--color-body);
+        background-color: var(--color-background);
+
+        font-family: var(--font-sans);
+        font-weight: 400;
+        line-height: 1.6;
+
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+        color: inherit;
+        font: inherit;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    button:disabled {
+        cursor: not-allowed;
+    }
+
+    img,
+    video {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 3px;
+    }
+
+    ::selection {
+        color: var(--color-foreground);
+        background-color: var(--color-primary);
+    }
+}
