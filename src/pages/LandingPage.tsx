@@ -1,10 +1,23 @@
 import desktopBackground from "../assets/images/bluenote-landing-desktop.png";
 import mobileBackground from "../assets/images/bluenote-landing-mobile.png";
 import { LandingHeader } from "../components/landing/LandingHeader";
+import { GuestRecordForm } from "../components/landing/GuestRecordForm";
+import { useState } from "react";
 
 export const LandingPage = () => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const handleLogin = () => {
         console.log("카카오 로그인");
+    };
+
+    const handleRecordSubmit = (content: string) => {
+        setIsLoading(true);
+        console.log("입력한 기록:", content);
+
+        window.setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
     };
 
     return (
@@ -43,12 +56,10 @@ export const LandingPage = () => {
                             오늘 있었던 일을 편하게 남겨보세요.
                         </p>
 
-                        {/* 다음 단계에서 기록 입력창으로 교체 */}
-                        <div className="mt-8 rounded-card border border-foreground/15 bg-background/65 p-5 backdrop-blur-md sm:p-6">
-                            <p className="text-sm text-muted">
-                                이곳에 기록 입력창을 추가할 예정입니다.
-                            </p>
-                        </div>
+                        <GuestRecordForm
+                            isLoading={isLoading}
+                            onSubmit={handleRecordSubmit}
+                        />
                     </div>
                 </section>
             </div>
