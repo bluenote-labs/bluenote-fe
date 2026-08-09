@@ -1,28 +1,60 @@
 import desktopBackground from "../assets/images/bluenote-landing-desktop.png";
 import mobileBackground from "../assets/images/bluenote-landing-mobile.png";
 import { LandingHeader } from "../components/landing/LandingHeader";
+import { generateRecord } from "../api/recordApi";
 import { GuestRecordForm } from "../components/landing/GuestRecordForm";
+import { GuestRecordResult } from "../components/landing/GuestRecordResult";
 import { redirectToKakaoLogin } from "../api/authApi";
 import { useState } from "react";
 
 export const LandingPage = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [generatedTitle, setGeneratedTitle] = useState("");
+    const [generatedBody, setGeneratedBody] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleLogin = () => {
         redirectToKakaoLogin();
     };
 
-    const handleRecordSubmit = (content: string) => {
+    const handleRecordSubmit = async (content: string) => {
         setIsLoading(true);
-        console.log("입력한 기록:", content);
+        setGeneratedTitle("");
+        setGeneratedBody("");
+        setErrorMessage("");
 
-        window.setTimeout(() => {
+        try {
+            await generateRecord(
+                {
+                    input: content,
+                },
+                {
+                    onEvent: (event) => {
+                        if (event.type === "title") {
+                            setGeneratedTitle(event.content);
+                        }
+
+                        if (event.type === "body") {
+                            setGeneratedBody((previousBody) => {
+                                return previousBody + event.content;
+                            });
+                        }
+                    },
+                },
+            );
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error
+                    ? error.message
+                    : "기록 정리에 실패했어요.",
+            );
+        } finally {
             setIsLoading(false);
-        }, 1000);
+        }
     };
 
     return (
-        <main className="relative isolate min-h-[100svh] overflow-hidden bg-background">
+        <main className="relative isolate min-h-[100svh] overflow-x-hidden bg-background">
             <picture className="absolute inset-0 z-0">
                 <source media="(max-width: 639px)" srcSet={mobileBackground} />
 
@@ -61,6 +93,23 @@ export const LandingPage = () => {
                             isLoading={isLoading}
                             onSubmit={handleRecordSubmit}
                         />
+
+                        {errorMessage && (
+                            <p role="alert" className="mt-4 text-sm text-error">
+                                {errorMessage}
+                            </p>
+                        )}
+
+                        {(isLoading || generatedTitle || generatedBody) && (
+                            <GuestRecordResult
+                                title={generatedTitle}
+                                body={generatedBody}
+                                isLoading={isLoading}
+                                onTitleChange={setGeneratedTitle}
+                                onBodyChange={setGeneratedBody}
+                                onLogin={handleLogin}
+                            />
+                        )}
                     </div>
                 </section>
             </div>
