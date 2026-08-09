@@ -13,3 +13,7 @@ export interface KakaoLoginResponse {
     user: AuthUser;
     isNewUser: boolean;
 }
+
+export interface LogoutResponse {
+    message: string;
+}

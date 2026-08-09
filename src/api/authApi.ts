@@ -1,8 +1,12 @@
-import type { KakaoLoginRequest, KakaoLoginResponse } from "../types/auth";
-import { apiClient } from "./client";
+import type {
+    KakaoLoginRequest,
+    KakaoLoginResponse,
+    LogoutResponse,
+} from "../types/auth";
+import { apiClient, authClient } from "./client";
+import { tokenStorage } from "../utils/tokenStorage";
 
 const KAKAO_AUTHORIZE_URL = "https://kauth.kakao.com/oauth/authorize";
-
 const KAKAO_STATE_KEY = "kakaoOAuthState";
 
 export const redirectToKakaoLogin = () => {
@@ -35,10 +39,18 @@ export const clearKakaoState = () => {
 export const loginWithKakao = async (
     request: KakaoLoginRequest,
 ): Promise<KakaoLoginResponse> => {
-    const response = await apiClient.post<KakaoLoginResponse>(
+    const response = await authClient.post<KakaoLoginResponse>(
         "/api/auth/kakao",
         request,
     );
 
     return response.data;
+};
+
+export const logout = async (): Promise<void> => {
+    try {
+        await apiClient.post<LogoutResponse>("/api/auth/logout");
+    } finally {
+        tokenStorage.remove();
+    }
 };
