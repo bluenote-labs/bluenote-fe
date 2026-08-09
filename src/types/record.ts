@@ -19,3 +19,9 @@ export type RecordStreamEvent =
     | {
           type: "done";
       };
+
+export interface GuestRecordDraft {
+    input: string;
+    title: string;
+    body: string;
+}

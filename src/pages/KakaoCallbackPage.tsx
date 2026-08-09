@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
 import {
     clearKakaoState,
     loginWithKakao,
     validateKakaoState,
 } from "../api/authApi";
+import { guestRecordStorage } from "../utils/guestRecordStorage";
 import { tokenStorage } from "../utils/tokenStorage";
 
 export const KakaoCallbackPage = () => {
@@ -40,16 +40,21 @@ export const KakaoCallbackPage = () => {
         const handleKakaoLogin = async () => {
             try {
                 const result = await loginWithKakao({ code });
+                const guestRecordDraft = guestRecordStorage.get();
 
                 tokenStorage.set(result.accessToken);
                 clearKakaoState();
 
+                if (guestRecordDraft) {
+                    navigate("/write/refine", {
+                        replace: true,
+                    });
+
+                    return;
+                }
+
                 navigate("/home", {
                     replace: true,
-                    state: {
-                        user: result.user,
-                        isNewUser: result.isNewUser,
-                    },
                 });
             } catch (error) {
                 clearKakaoState();

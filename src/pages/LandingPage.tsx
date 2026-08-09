@@ -4,6 +4,7 @@ import { LandingHeader } from "../components/landing/LandingHeader";
 import { generateRecord } from "../api/recordApi";
 import { GuestRecordForm } from "../components/landing/GuestRecordForm";
 import { GuestRecordResult } from "../components/landing/GuestRecordResult";
+import { guestRecordStorage } from "../utils/guestRecordStorage";
 import { redirectToKakaoLogin } from "../api/authApi";
 import { useState } from "react";
 
@@ -12,12 +13,28 @@ export const LandingPage = () => {
     const [generatedTitle, setGeneratedTitle] = useState("");
     const [generatedBody, setGeneratedBody] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [guestInput, setGuestInput] = useState("");
 
     const handleLogin = () => {
         redirectToKakaoLogin();
     };
 
+    const handleGuestRecordLogin = () => {
+        if (!generatedTitle.trim() || !generatedBody.trim()) {
+            return;
+        }
+
+        guestRecordStorage.set({
+            input: guestInput,
+            title: generatedTitle,
+            body: generatedBody,
+        });
+
+        redirectToKakaoLogin();
+    };
+
     const handleRecordSubmit = async (content: string) => {
+        setGuestInput(content);
         setIsLoading(true);
         setGeneratedTitle("");
         setGeneratedBody("");
@@ -107,7 +124,7 @@ export const LandingPage = () => {
                                 isLoading={isLoading}
                                 onTitleChange={setGeneratedTitle}
                                 onBodyChange={setGeneratedBody}
-                                onLogin={handleLogin}
+                                onLogin={handleGuestRecordLogin}
                             />
                         )}
                     </div>
