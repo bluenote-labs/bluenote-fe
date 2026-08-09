@@ -10,42 +10,54 @@ import { RecordsPage } from "../pages/RecordsPage";
 import { RefinePage } from "../pages/RefinePage";
 import { WritePage } from "../pages/WritePage";
 import { KakaoCallbackPage } from "../pages/KakaoCallbackPage";
+import { GuestOnlyRoute } from "../components/auth/GuestOnlyRoute";
+import { ProtectedRoute } from "../components/auth/ProtectedRoute";
 
 export const router = createBrowserRouter([
     {
-        path: "/",
-        element: <LandingPage />,
+        element: <GuestOnlyRoute />,
+        children: [
+            {
+                path: "/",
+                element: <LandingPage />,
+            },
+        ],
     },
     {
         path: "auth/kakao/callback",
         element: <KakaoCallbackPage />,
     },
     {
-        element: <AppLayout />,
+        element: <ProtectedRoute />,
         children: [
             {
-                path: "/home",
-                element: <HomePage />,
-            },
-            {
-                path: "/write",
-                element: <WritePage />,
-            },
-            {
-                path: "/write/refine",
-                element: <RefinePage />,
-            },
-            {
-                path: "/records",
-                element: <RecordsPage />,
-            },
-            {
-                path: "/records/:recordId",
-                element: <RecordDetailPage />,
-            },
-            {
-                path: "/patterns",
-                element: <PatternsPage />,
+                element: <AppLayout />,
+                children: [
+                    {
+                        path: "/home",
+                        element: <HomePage />,
+                    },
+                    {
+                        path: "/write",
+                        element: <WritePage />,
+                    },
+                    {
+                        path: "/write/refine",
+                        element: <RefinePage />,
+                    },
+                    {
+                        path: "/records",
+                        element: <RecordsPage />,
+                    },
+                    {
+                        path: "/records/:recordId",
+                        element: <RecordDetailPage />,
+                    },
+                    {
+                        path: "/patterns",
+                        element: <PatternsPage />,
+                    },
+                ],
             },
         ],
     },
