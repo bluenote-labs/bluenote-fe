@@ -9,11 +9,16 @@ import { RecordDetailPage } from "../pages/RecordDetailPage";
 import { RecordsPage } from "../pages/RecordsPage";
 import { RefinePage } from "../pages/RefinePage";
 import { WritePage } from "../pages/WritePage";
+import { KakaoCallbackPage } from "../pages/KakaoCallbackPage";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <LandingPage />,
+    },
+    {
+        path: "auth/kakao/callback",
+        element: <KakaoCallbackPage />,
     },
     {
         element: <AppLayout />,

@@ -2,13 +2,14 @@ import desktopBackground from "../assets/images/bluenote-landing-desktop.png";
 import mobileBackground from "../assets/images/bluenote-landing-mobile.png";
 import { LandingHeader } from "../components/landing/LandingHeader";
 import { GuestRecordForm } from "../components/landing/GuestRecordForm";
+import { redirectToKakaoLogin } from "../api/authApi";
 import { useState } from "react";
 
 export const LandingPage = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = () => {
-        console.log("카카오 로그인");
+        redirectToKakaoLogin();
     };
 
     const handleRecordSubmit = (content: string) => {
