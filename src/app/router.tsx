@@ -7,7 +7,7 @@ import { NotFoundPage } from "../pages/NotFoundPage";
 import { PatternsPage } from "../pages/PatternsPage";
 import { RecordDetailPage } from "../pages/RecordDetailPage";
 import { RecordsPage } from "../pages/RecordsPage";
-import { RefinePage } from "../pages/RefinePage";
+import { RecordRefinePage } from "../pages/RecordRefinePage";
 import { WritePage } from "../pages/WritePage";
 import { KakaoCallbackPage } from "../pages/KakaoCallbackPage";
 import { GuestOnlyRoute } from "../components/auth/GuestOnlyRoute";
@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "/write/refine",
-                        element: <RefinePage />,
+                        element: <RecordRefinePage />,
                     },
                     {
                         path: "/records",
