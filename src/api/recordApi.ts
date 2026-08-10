@@ -78,6 +78,7 @@ export const getRecords = async (
         params: {
             page: params.page ?? 1,
             limit: params.limit ?? 10,
+            month: params.month,
         },
         signal,
     });

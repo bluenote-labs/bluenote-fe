@@ -79,4 +79,5 @@ export interface RecordListResponse {
 export interface GetRecordsParams {
     page?: number;
     limit?: number;
+    month?: string;
 }

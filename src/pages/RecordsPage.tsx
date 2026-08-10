@@ -4,8 +4,16 @@ import { Link } from "react-router-dom";
 import { getRecords } from "../api/recordApi";
 import { RecordCard } from "../components/record/RecordCard";
 import type { RecordListItem, RecordListResponse } from "../types/record";
+import { RecordCalendar } from "../components/record/RecordCalendar";
 
 const PAGE_SIZE = 10;
+type RecordsView = "gallery" | "calendar";
+const formatMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
+    return `${year}-${month}`;
+};
 
 export const RecordsPage = () => {
     const [records, setRecords] = useState<RecordListItem[]>([]);
@@ -16,6 +24,18 @@ export const RecordsPage = () => {
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
+    const [view, setView] = useState<RecordsView>("gallery");
+    const [selectedMonth, setSelectedMonth] = useState(() => new Date());
+
+    const handleViewChange = (nextView: RecordsView) => {
+        if (nextView === view) {
+            return;
+        }
+
+        setIsLoading(true);
+        setErrorMessage("");
+        setView(nextView);
+    };
 
     useEffect(() => {
         const controller = new AbortController();
@@ -23,10 +43,16 @@ export const RecordsPage = () => {
         const loadRecords = async () => {
             try {
                 const result = await getRecords(
-                    {
-                        page,
-                        limit: PAGE_SIZE,
-                    },
+                    view === "calendar"
+                        ? {
+                              page: 1,
+                              limit: 31,
+                              month: formatMonth(selectedMonth),
+                          }
+                        : {
+                              page,
+                              limit: PAGE_SIZE,
+                          },
                     controller.signal,
                 );
 
@@ -58,7 +84,7 @@ export const RecordsPage = () => {
         return () => {
             controller.abort();
         };
-    }, [page]);
+    }, [page, view, selectedMonth]);
 
     const handlePreviousPage = () => {
         if (page <= 1) {
@@ -109,7 +135,11 @@ export const RecordsPage = () => {
                     </h1>
 
                     <p className="mt-2 text-sm text-muted">
-                        지금까지 {pagination?.total ?? 0}개의 기록을 남겼어요.
+                        {view === "calendar"
+                            ? `${selectedMonth.getFullYear()}년 ${
+                                  selectedMonth.getMonth() + 1
+                              }월에는 ${pagination?.total ?? 0}개의 기록을 남겼어요.`
+                            : `지금까지 ${pagination?.total ?? 0}개의 기록을 남겼어요.`}
                     </p>
                 </div>
 
@@ -121,7 +151,64 @@ export const RecordsPage = () => {
                 </Link>
             </header>
 
-            {records.length === 0 ? (
+            <div className="mt-8 flex border-b border-divider">
+                <button
+                    type="button"
+                    onClick={() => handleViewChange("gallery")}
+                    className={`border-b-2 px-4 py-3 text-sm ${
+                        view === "gallery"
+                            ? "border-primary text-foreground"
+                            : "border-transparent text-muted"
+                    }`}
+                >
+                    사진 모아보기
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => handleViewChange("calendar")}
+                    className={`border-b-2 px-4 py-3 text-sm ${
+                        view === "calendar"
+                            ? "border-primary text-foreground"
+                            : "border-transparent text-muted"
+                    }`}
+                >
+                    달력으로 보기
+                </button>
+            </div>
+
+            {view === "calendar" ? (
+                <RecordCalendar
+                    records={records}
+                    selectedMonth={selectedMonth}
+                    onPreviousMonth={() => {
+                        setIsLoading(true);
+                        setErrorMessage("");
+
+                        setSelectedMonth(
+                            (currentMonth) =>
+                                new Date(
+                                    currentMonth.getFullYear(),
+                                    currentMonth.getMonth() - 1,
+                                    1,
+                                ),
+                        );
+                    }}
+                    onNextMonth={() => {
+                        setIsLoading(true);
+                        setErrorMessage("");
+
+                        setSelectedMonth(
+                            (currentMonth) =>
+                                new Date(
+                                    currentMonth.getFullYear(),
+                                    currentMonth.getMonth() + 1,
+                                    1,
+                                ),
+                        );
+                    }}
+                />
+            ) : records.length === 0 ? (
                 <section className="mt-16 rounded-card border border-border bg-surface px-5 py-16 text-center">
                     <p className="text-lg font-medium text-foreground">
                         아직 남긴 기록이 없어요.
