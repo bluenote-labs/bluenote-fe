@@ -15,6 +15,7 @@ export const RecordRefinePage = () => {
     const [content, setContent] = useState<JSONContent | null>(
         initialDraft?.content ?? null,
     );
+    const isDirectWrite = initialDraft?.source === "direct";
     const [isSaving, setIsSaving] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -111,15 +112,19 @@ export const RecordRefinePage = () => {
         <main className="mx-auto w-full max-w-4xl px-5 py-10 sm:px-6">
             <header>
                 <p className="text-sm font-medium text-moonlight">
-                    기록 다듬기
+                    {isDirectWrite ? "직접 기록하기" : "기록 다듬기"}
                 </p>
 
                 <h1 className="mt-2 text-2xl font-semibold text-foreground">
-                    오늘의 기록을 내 언어로 다듬어보세요.
+                    {isDirectWrite
+                        ? "오늘의 기록을 남겨보세요."
+                        : "오늘의 기록을 내 언어로 다듬어보세요."}
                 </h1>
 
                 <p className="mt-2 text-sm text-muted">
-                    AI가 정리한 초안입니다. 자유롭게 수정할 수 있어요.
+                    {isDirectWrite
+                        ? "떠오르는 생각을 자유롭게 작성할 수 있어요."
+                        : "AI가 정리한 초안입니다. 자유롭게 수정할 수 있어요."}
                 </p>
             </header>
 

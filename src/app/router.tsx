@@ -8,10 +8,10 @@ import { PatternsPage } from "../pages/PatternsPage";
 import { RecordDetailPage } from "../pages/RecordDetailPage";
 import { RecordsPage } from "../pages/RecordsPage";
 import { RecordRefinePage } from "../pages/RecordRefinePage";
-import { WritePage } from "../pages/WritePage";
 import { KakaoCallbackPage } from "../pages/KakaoCallbackPage";
 import { GuestOnlyRoute } from "../components/auth/GuestOnlyRoute";
 import { ProtectedRoute } from "../components/auth/ProtectedRoute";
+import { RecordWritePage } from "../pages/RecordWritePage";
 
 export const router = createBrowserRouter([
     {
@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "/write",
-                        element: <WritePage />,
+                        element: <RecordWritePage />,
                     },
                     {
                         path: "/write/refine",
