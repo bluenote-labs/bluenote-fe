@@ -2,6 +2,8 @@ import type { JSONContent } from "@tiptap/core";
 import { Markdown } from "@tiptap/markdown";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
+import { ImageUploadButton } from "./ImageUploadButton";
 
 interface RecordEditorProps {
     initialContent: string | JSONContent;
@@ -15,7 +17,13 @@ export const RecordEditor = ({
     const isMarkdown = typeof initialContent === "string";
 
     const editor = useEditor({
-        extensions: [StarterKit, Markdown],
+        extensions: [
+            StarterKit,
+            Markdown,
+            Image.configure({
+                allowBase64: false,
+            }),
+        ],
         content: initialContent,
         contentType: isMarkdown ? "markdown" : "json",
 
@@ -38,6 +46,10 @@ export const RecordEditor = ({
                     "[&_blockquote]:border-primary",
                     "[&_blockquote]:pl-4",
                     "[&_blockquote]:text-muted",
+                    "[&_img]:my-5",
+                    "[&_img]:max-w-full",
+                    "[&_img]:rounded-card",
+                    "[&_img]:object-cover",
                 ].join(" "),
             },
         },
@@ -113,6 +125,7 @@ export const RecordEditor = ({
                 >
                     인용
                 </button>
+                <ImageUploadButton editor={editor} />
             </div>
 
             <EditorContent editor={editor} />
