@@ -4,7 +4,7 @@ import { LandingHeader } from "../components/landing/LandingHeader";
 import { generateRecord } from "../api/recordApi";
 import { GuestRecordForm } from "../components/landing/GuestRecordForm";
 import { GuestRecordResult } from "../components/landing/GuestRecordResult";
-import { guestRecordStorage } from "../utils/guestRecordStorage";
+import { recordDraftStorage } from "../utils/recordDraftStorage";
 import { redirectToKakaoLogin } from "../api/authApi";
 import { useState } from "react";
 
@@ -24,7 +24,8 @@ export const LandingPage = () => {
             return;
         }
 
-        guestRecordStorage.set({
+        recordDraftStorage.set({
+            source: "guest-ai",
             input: guestInput,
             title: generatedTitle,
             body: generatedBody,

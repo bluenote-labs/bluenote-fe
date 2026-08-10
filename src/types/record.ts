@@ -22,12 +22,13 @@ export type RecordStreamEvent =
           type: "done";
       };
 
-export interface GuestRecordDraft {
-    input: string;
+export type RecordDraftSource = "guest-ai" | "ai" | "direct";
+
+export interface RecordDraft {
+    source: RecordDraftSource;
+    input?: string;
     title: string;
-    // AI가 생성한 최초 Markdown
-    body: string;
-    // Tiptap에서 수정한 이후의 JSON
+    body?: string;
     content?: JSONContent;
 }
 

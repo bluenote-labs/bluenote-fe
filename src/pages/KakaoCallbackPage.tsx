@@ -6,7 +6,7 @@ import {
     loginWithKakao,
     validateKakaoState,
 } from "../api/authApi";
-import { guestRecordStorage } from "../utils/guestRecordStorage";
+import { recordDraftStorage } from "../utils/recordDraftStorage";
 import { tokenStorage } from "../utils/tokenStorage";
 
 export const KakaoCallbackPage = () => {
@@ -39,13 +39,16 @@ export const KakaoCallbackPage = () => {
 
         const handleKakaoLogin = async () => {
             try {
-                const result = await loginWithKakao({ code });
-                const guestRecordDraft = guestRecordStorage.get();
+                const result = await loginWithKakao({
+                    code,
+                });
 
                 tokenStorage.set(result.accessToken);
                 clearKakaoState();
 
-                if (guestRecordDraft) {
+                const recordDraft = recordDraftStorage.get();
+
+                if (recordDraft) {
                     navigate("/write/refine", {
                         replace: true,
                     });
@@ -59,7 +62,7 @@ export const KakaoCallbackPage = () => {
             } catch (error) {
                 clearKakaoState();
 
-                if (axios.isAxiosError(error)) {
+                if (axios.isAxiosError<{ detail: string }>(error)) {
                     setApiErrorMessage(
                         error.response?.data?.detail ??
                             "카카오 로그인에 실패했어요.",

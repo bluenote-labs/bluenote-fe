@@ -2,14 +2,14 @@ import type { JSONContent } from "@tiptap/core";
 import { useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { RecordEditor } from "../components/editor/RecordEditor";
-import { guestRecordStorage } from "../utils/guestRecordStorage";
+import { recordDraftStorage } from "../utils/recordDraftStorage";
 import axios from "axios";
 import { createRecord } from "../api/recordApi";
 
 export const RecordRefinePage = () => {
     const navigate = useNavigate();
     const [initialDraft] = useState(() => {
-        return guestRecordStorage.get();
+        return recordDraftStorage.get();
     });
     const [title, setTitle] = useState(initialDraft?.title ?? "");
     const [content, setContent] = useState<JSONContent | null>(
@@ -27,7 +27,7 @@ export const RecordRefinePage = () => {
             return;
         }
 
-        guestRecordStorage.set({
+        recordDraftStorage.set({
             ...initialDraft,
             title: nextTitle,
             content: content ?? initialDraft.content,
@@ -41,7 +41,7 @@ export const RecordRefinePage = () => {
             return;
         }
 
-        guestRecordStorage.set({
+        recordDraftStorage.set({
             ...initialDraft,
             title,
             content: nextContent,
@@ -70,7 +70,7 @@ export const RecordRefinePage = () => {
                 content,
             });
 
-            guestRecordStorage.remove();
+            recordDraftStorage.remove();
 
             navigate(`/records/${savedRecord.id}`, {
                 replace: true,
@@ -144,7 +144,15 @@ export const RecordRefinePage = () => {
 
                     <RecordEditor
                         initialContent={
-                            initialDraft.content ?? initialDraft.body
+                            initialDraft.content ??
+                            initialDraft.body ?? {
+                                type: "doc",
+                                content: [
+                                    {
+                                        type: "paragraph",
+                                    },
+                                ],
+                            }
                         }
                         onChange={handleContentChange}
                     />
