@@ -7,12 +7,14 @@ import { ImageUploadButton } from "./ImageUploadButton";
 
 interface RecordEditorProps {
     initialContent: string | JSONContent;
-    onChange: (content: JSONContent) => void;
+    onChange?: (content: JSONContent) => void;
+    editable?: boolean;
 }
 
 export const RecordEditor = ({
     initialContent,
     onChange,
+    editable = true,
 }: RecordEditorProps) => {
     const isMarkdown = typeof initialContent === "string";
 
@@ -26,6 +28,7 @@ export const RecordEditor = ({
         ],
         content: initialContent,
         contentType: isMarkdown ? "markdown" : "json",
+        editable,
 
         editorProps: {
             attributes: {
@@ -55,11 +58,11 @@ export const RecordEditor = ({
         },
 
         onCreate: ({ editor }) => {
-            onChange(editor.getJSON());
+            onChange?.(editor.getJSON());
         },
 
         onUpdate: ({ editor }) => {
-            onChange(editor.getJSON());
+            onChange?.(editor.getJSON());
         },
     });
 
@@ -68,7 +71,8 @@ export const RecordEditor = ({
     }
 
     return (
-        <div className="overflow-hidden rounded-card border border-border bg-background/60">
+    <div className="overflow-hidden rounded-card border border-border bg-background/60">
+        {editable && (
             <div className="flex flex-wrap gap-1 border-b border-divider p-2">
                 <button
                     type="button"
@@ -128,7 +132,9 @@ export const RecordEditor = ({
                 <ImageUploadButton editor={editor} />
             </div>
 
-            <EditorContent editor={editor} />
-        </div>
+        )}
+
+        <EditorContent editor={editor} />
+    </div>
     );
 };

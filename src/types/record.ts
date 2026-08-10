@@ -42,3 +42,19 @@ export interface CreateRecordResponse {
     title: string;
     createdAt: string;
 }
+
+export interface RecordGoal {
+    id: string;
+    title: string;
+}
+
+export interface RecordDetailResponse {
+    id: string;
+    date: string;
+    title: string;
+    content: JSONContent;
+    imageUrl: string | null;
+    goals: RecordGoal[];
+    createdAt: string;
+    updatedAt: string;
+}
