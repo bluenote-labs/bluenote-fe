@@ -3,6 +3,8 @@ import type {
     GenerateRecordRequest,
     RecordStreamEvent,
     RecordDetailResponse,
+    GetRecordsParams,
+    RecordListResponse,
 } from "../types/record";
 import type {
     CreateRecordRequest,
@@ -64,6 +66,21 @@ export const getRecordDetail = async (
             signal,
         },
     );
+
+    return response.data;
+};
+
+export const getRecords = async (
+    params: GetRecordsParams = {},
+    signal?: AbortSignal,
+): Promise<RecordListResponse> => {
+    const response = await apiClient.get<RecordListResponse>("/api/records", {
+        params: {
+            page: params.page ?? 1,
+            limit: params.limit ?? 10,
+        },
+        signal,
+    });
 
     return response.data;
 };

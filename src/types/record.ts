@@ -58,3 +58,25 @@ export interface RecordDetailResponse {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface RecordListItem {
+    id: string;
+    date: string;
+    title: string;
+    imageUrl: string | null;
+    goals: RecordGoal[];
+    createdAt: string;
+}
+
+export interface RecordListResponse {
+    records: RecordListItem[];
+    total: number;
+    page: number;
+    totalPages: number;
+    hasNext: boolean;
+}
+
+export interface GetRecordsParams {
+    page?: number;
+    limit?: number;
+}
