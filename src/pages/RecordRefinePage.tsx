@@ -1,22 +1,22 @@
 import type { JSONContent } from "@tiptap/core";
 import { useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { RecordEditor } from "../components/editor/RecordEditor";
 import { guestRecordStorage } from "../utils/guestRecordStorage";
+import axios from "axios";
+import { createRecord } from "../api/recordApi";
 
 export const RecordRefinePage = () => {
     const navigate = useNavigate();
-
     const [initialDraft] = useState(() => {
         return guestRecordStorage.get();
     });
-
     const [title, setTitle] = useState(initialDraft?.title ?? "");
-
     const [content, setContent] = useState<JSONContent | null>(
         initialDraft?.content ?? null,
     );
+    const [isSaving, setIsSaving] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const nextTitle = event.target.value;
@@ -46,6 +46,47 @@ export const RecordRefinePage = () => {
             title,
             content: nextContent,
         });
+    };
+
+    const handleSave = async () => {
+        const trimmedTitle = title.trim();
+
+        if (!trimmedTitle) {
+            setErrorMessage("제목을 입력해 주세요.");
+            return;
+        }
+
+        if (!content) {
+            setErrorMessage("기록할 내용을 입력해 주세요.");
+            return;
+        }
+
+        setIsSaving(true);
+        setErrorMessage("");
+
+        try {
+            const savedRecord = await createRecord({
+                title: trimmedTitle,
+                content,
+            });
+
+            guestRecordStorage.remove();
+
+            navigate(`/records/${savedRecord.id}`, {
+                replace: true,
+            });
+        } catch (error) {
+            if (axios.isAxiosError<{ detail: string }>(error)) {
+                setErrorMessage(
+                    error.response?.data?.detail ?? "기록 저장에 실패했어요.",
+                );
+                return;
+            }
+
+            setErrorMessage("잠시 후 다시 시도해 주세요.");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     if (!initialDraft) {
@@ -107,6 +148,25 @@ export const RecordRefinePage = () => {
                         }
                         onChange={handleContentChange}
                     />
+                </div>
+
+                {errorMessage && (
+                    <p role="alert" className="mt-4 text-sm text-error">
+                        {errorMessage}
+                    </p>
+                )}
+
+                <div className="mt-6 flex justify-end">
+                    <button
+                        type="button"
+                        onClick={handleSave}
+                        disabled={isSaving || !title.trim() || !content}
+                        className="rounded-button bg-primary px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-primary-hover active:bg-primary-pressed disabled:cursor-not-allowed disabled:bg-disabled"
+                    >
+                        {isSaving
+                            ? "기록을 저장하고 있어요..."
+                            : "기록 저장하기"}
+                    </button>
                 </div>
             </section>
         </main>
